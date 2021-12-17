@@ -1,3 +1,5 @@
+mod input;
+mod types;
 
 use sdl2::pixels::Color;
 use sdl2::event::Event;
@@ -6,6 +8,7 @@ use std::time::Duration;
 use sdl2::rect::{Point, Rect};
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+use crate::input::field_from_name;
 
 pub fn main() {
     rendering();
@@ -42,6 +45,36 @@ fn draw_segment(canvas: &mut Canvas<Window>, start: Point, end: Point, color: Co
     canvas.draw_line(Point::new(start.x(), start.y()-1), Point::new(end.x(), end.y()-1));
 }
 
+fn instance_demo (canvas: &mut Canvas<Window>) {
+
+    let mut field = field_from_name("input1").expect("Cannot load inputs field.");
+
+
+    for ball in field.balls{
+        draw_circle(canvas, Point::new(ball[0], ball[1]), 5, Color::RGB(255,0,0));
+    }
+
+
+    for hole in field.holes{
+        draw_circle(canvas, Point::new(hole[0], hole[1]), 5, Color::RGB(0,0,255));
+    }
+
+    //[((1 , 1), (4 , 3)) , ((2.8 , 2.8), (1.2 , 2.2)) , ((3.2 , 3.8) , (3.8 , 3.2)) , ((4.8 , 2.2) , (5.8 , 1.8))]
+    //draw line
+    draw_segment(canvas, Point::new(100, 100), Point::new(400, 300), Color::RGB(0,0,0));
+    draw_segment(canvas, Point::new(280, 280), Point::new(120, 220), Color::RGB(0,0,0));
+    draw_segment(canvas, Point::new(320, 380), Point::new(380, 320), Color::RGB(0,0,0));
+    draw_segment(canvas, Point::new(480, 220), Point::new(580, 180), Color::RGB(0,0,0));
+
+}
+
+fn background (canvas : &mut Canvas<Window>){
+    // color background
+    canvas.set_draw_color(Color::RGB(0, 255, 0));
+    // background
+    canvas.fill_rect(Rect::new(0, 0, 800, 600));
+}
+
 fn rendering (){
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -53,17 +86,8 @@ fn rendering (){
         // render faster than your display rate (usually 60Hz or 144Hz)
         .build().unwrap();
 
-// color background
-    canvas.set_draw_color(Color::RGB(0, 255, 0));
-// background
-    canvas.fill_rect(Rect::new(0, 0, 800, 600));
-
-    // draw points
-    draw_circle(&mut canvas, Point::new(10, 10), 5, Color::RGB(255, 0, 0));
-    draw_circle(&mut canvas, Point::new(20, 20), 5, Color::RGB(0, 0, 255));
-
-    //draw line
-    draw_segment(&mut canvas, Point::new(10, 10), Point::new(20, 20), Color::RGB(0,0,0));
+    background(&mut canvas);
+    instance_demo(&mut canvas);
 
     //update canvas
     canvas.present();
