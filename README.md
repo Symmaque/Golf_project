@@ -13,3 +13,5 @@ Install Rust :
 GNU Project debugger (optional) :
 
 `sudo apt install gdb`
+
+`cargo install --path .`
