@@ -1,3 +1,4 @@
+use std::env::current_dir;
 use crate::types::GolfField;
 use serde_json::Result;
 use std::fs;
@@ -5,8 +6,8 @@ use std::fs;
 /// Utility function returning inputs path.
 pub fn input_path(field_name: &str) -> std::io::Result<std::path::PathBuf> {
     Ok(fs::canonicalize(format!(
-        "{}{}.{}",
-        "..//inputs//", field_name, "json"
+        "{}{}{}.{}",
+        current_dir().unwrap().to_str().unwrap(), "\\inputs\\", field_name, "json"
     ))?)
 }
 
@@ -35,7 +36,7 @@ pub fn field_from_path(path: &std::path::PathBuf) -> Result<GolfField> {
 /// let field: GolfField = field_from_name("input1").expect("Cannot load field.");
 /// ```
 pub fn field_from_name(field_name: &str) -> Result<GolfField> {
-    // retreive inputs path
+    // retrieve inputs path
     let path = input_path(field_name).expect("Input path doesn\'t exist.");
     // read and parse inputs field
     let field = field_from_path(&path).expect("Cannot read and parse inputs field.");
