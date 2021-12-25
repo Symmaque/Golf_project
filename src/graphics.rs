@@ -1,3 +1,4 @@
+
 use sdl2::pixels::Color;
 use sdl2::rect::{Point, Rect};
 use sdl2::render::Canvas;
@@ -38,11 +39,12 @@ pub(crate) fn draw_circle(canvas: &mut Canvas<Window>, center: Point, radius: i3
     }
 }
 
-pub(crate) fn draw_segment(canvas: &mut Canvas<Window>, start: types::Point, end: types::Point, color: Color){
+pub(crate) fn draw_segment(canvas: &mut Canvas<Window>, start: &types::Point, end: &types::Point, color: Color){
     canvas.set_draw_color(color);
     canvas.draw_line(Point::new(start[0], start[1]), Point::new(end[0], end[1]));
     canvas.draw_line(Point::new(start[0], start[1]+1), Point::new(end[0], end[1]+1));
     canvas.draw_line(Point::new(start[0], start[1]-1), Point::new(end[0], end[1]-1));
+    canvas.present();
 }
 
 pub(crate) fn draw_field(canvas: &mut Canvas<Window>, field : &GolfField){
