@@ -5,6 +5,7 @@ use sdl2::video::Window;
 use crate::{graphics, types};
 use crate::types::GolfField;
 
+
 pub(crate) fn background(canvas: &mut Canvas<Window>) {
     // color background
     canvas.set_draw_color(Color::RGB(0, 255, 0));
@@ -44,6 +45,8 @@ pub(crate) fn draw_segment(canvas: &mut Canvas<Window>, start: &types::Point, en
     canvas.draw_line(Point::new(start[0], start[1] - 1), Point::new(end[0], end[1] - 1)).expect(&*format!("Can't draw line from [{},{}] to [{},{}]", start[0], start[1] - 1, end[0], end[1] - 1));
     canvas.present();
 }
+
+
 
 pub(crate) fn draw_field(canvas: &mut Canvas<Window>, field: &GolfField) {
     for ball in &field.balls {

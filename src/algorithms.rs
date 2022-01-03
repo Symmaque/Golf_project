@@ -3,6 +3,7 @@ use sdl2::pixels::Color;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 use crate::graphics::draw_segment;
+use crate::output::save_segment;
 use crate::types::{Point};
 
 pub(crate) fn distance(m: &Point, p: &Point) -> i32 {
@@ -11,26 +12,31 @@ pub(crate) fn distance(m: &Point, p: &Point) -> i32 {
     diff_x * diff_x + diff_y * diff_y
 }
 
-pub(crate) fn golf(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Vec<Point>) {
+pub(crate) fn golf(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Vec<Point>, filename: &String) {
     if b.len() <= 2 {
-        conquer(canvas, b, h);
+        conquer(canvas, b, h, filename);
     } else {
-        divide(canvas, b, h);
+        divide(canvas, b, h, filename);
     }
 }
 
-pub(crate) fn conquer(canvas: &mut Canvas<Window>, b: &Vec<Point>, h: &Vec<Point>) {
+pub(crate) fn conquer(canvas: &mut Canvas<Window>, b: &Vec<Point>, h: &Vec<Point>, filename: &String) {
     if b.len() == 0 {
         ()
     }
     if b.len() == 1 {
         draw_segment(canvas, &b[0], &h[0], Color::RGB(0, 0, 0));
+        save_segment(&b[0], &h[0], filename).unwrap();
     } else if distance(&b[0], &h[0]) + distance(&b[1], &h[1]) < distance(&b[0], &h[1]) + distance(&b[1], &h[0]) {
         draw_segment(canvas, &b[0], &h[0], Color::RGB(0, 0, 0));
         draw_segment(canvas, &b[1], &h[1], Color::RGB(0, 0, 0));
+        save_segment(&b[0], &h[0], filename).unwrap();
+        save_segment(&b[1], &h[1], filename).unwrap();
     } else {
         draw_segment(canvas, &b[0], &h[1], Color::RGB(0, 0, 0));
         draw_segment(canvas, &b[1], &h[0], Color::RGB(0, 0, 0));
+        save_segment(&b[0], &h[1], filename).unwrap();
+        save_segment(&b[1], &h[0], filename).unwrap();
     }
 }
 
@@ -115,13 +121,14 @@ pub(crate) fn compute_angles(b: &Vec<Point>, h: &Vec<Point>, origin: &Point, ori
     (alpha, beta)
 }
 
-pub(crate) fn divide(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Vec<Point>) {
+pub(crate) fn divide(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Vec<Point>, filename: &String) {
     let (origin, origin_type) = find_origin(b, h);
     let (alpha, beta) = compute_angles(&b, &h, &origin, origin_type);
     let n = alpha.len();
 
     if alpha[0].0 < beta[0].0 {
         draw_segment(canvas, &origin, &alpha[0].1, Color::RGB(0, 0, 0));
+        save_segment(&origin, &alpha[0].1, filename).unwrap();
         if origin_type {
             b.retain(|&x| (x[0] != origin[0] || x[1] != origin[1]));
             h.retain(|&x| (x[0] != (alpha[0].1)[0] || x[1] != (alpha[0].1)[1]));
@@ -129,9 +136,10 @@ pub(crate) fn divide(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Ve
             h.retain(|&x| (x[0] != origin[0] || x[1] != origin[1]));
             b.retain(|&x| (x[0] != alpha[0].1[0] || x[1] != alpha[0].1[1]));
         }
-        golf(canvas, b, h);
+        golf(canvas, b, h, filename);
     } else if alpha[n - 1].0 > beta[n - 2].0 {
         draw_segment(canvas, &origin, &alpha[n - 1].1, Color::RGB(0, 0, 0));
+        save_segment(&origin, &alpha[n - 1].1, filename).unwrap();
         if origin_type {
             b.retain(|&x| (x[0] != origin[0] || x[1] != origin[1]));
             h.retain(|&x| (x[0] != alpha[n - 1].1[0] || x[1] != alpha[n - 1].1[1]));
@@ -139,11 +147,12 @@ pub(crate) fn divide(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Ve
             h.retain(|&x| (x[0] != origin[0] || x[1] != origin[1]));
             b.retain(|&x| (x[0] != alpha[n - 1].1[0] || x[1] != alpha[n - 1].1[1]));
         }
-        golf(canvas, b, h);
+        golf(canvas, b, h, filename);
     } else {
         for i in 1..(n - 1) {
             if alpha[i].0 > beta[i - 1].0 && alpha[i].0 < beta[i].0 {
                 draw_segment(canvas, &origin, &alpha[i].1, Color::RGB(0, 0, 0));
+                save_segment(&origin, &alpha[i].1, filename).unwrap();
                 let mut b_left: Vec<Point> = Vec::new();
                 let mut h_left: Vec<Point> = Vec::new();
                 let mut b_right: Vec<Point> = Vec::new();
@@ -168,8 +177,8 @@ pub(crate) fn divide(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Ve
                         h_right.push(beta[k + 1].1);
                     }
                 }
-                golf(canvas, &mut b_left, &mut h_left);
-                golf(canvas, &mut b_right, &mut h_right);
+                golf(canvas, &mut b_left, &mut h_left, filename);
+                golf(canvas, &mut b_right, &mut h_right, filename);
                 return;
             }
         }

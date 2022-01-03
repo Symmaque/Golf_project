@@ -48,6 +48,6 @@ fn should_correctly_load_input() {
     let field = field_from_name("input1").expect("Cannot load inputs field.");
     assert_eq!(
         format!("{:?}", field),
-        "GolfField { holes: [[4.0, 3.0], [1.2, 2.2], [3.8, 3.2], [5.8, 1.8]], balls: [[1.0, 1.0], [2.8, 2.8], [3.2, 3.8], [4.8, 2.2]] }"
+        "GolfField { holes: [[400, 300], [120, 220], [380, 320], [580, 180]], balls: [[100, 100], [280, 280], [320, 380], [480, 220]] }"
     )
 }
