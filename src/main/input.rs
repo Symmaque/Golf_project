@@ -1,13 +1,15 @@
 use std::env::current_dir;
-use crate::types::GolfField;
+use crate::types::{GolfField, Point};
 use serde_json::Result;
-use std::fs;
+use std::{fs, io};
+use std::fs::File;
+use std::io::BufRead;
 
 /// Utility function returning inputs path.
 pub fn input_path(field_name: &str) -> std::io::Result<std::path::PathBuf> {
     Ok(fs::canonicalize(format!(
         "{}{}{}.{}",
-        current_dir().unwrap().to_str().unwrap(), "\\inputs\\", field_name, "json"
+        current_dir().unwrap().to_str().unwrap(), "\\inputs\\", field_name, "txt"
     ))?)
 }
 
@@ -17,10 +19,38 @@ pub fn input_path(field_name: &str) -> std::io::Result<std::path::PathBuf> {
 /// let field: GolfField = field_from_path(&input_path("input1"));
 /// ```
 pub fn field_from_path(path: &std::path::PathBuf) -> Result<GolfField> {
-    // read some JSON inputs data as a String. Maybe this comes from the user.
-    let raw_data = fs::read_to_string(path).expect("Unable to read file.");
-    // parse the string of data into a GolfField object
-    let field: GolfField = serde_json::from_str(&raw_data.to_string())?;
+    let lines = io::BufReader::new(File::open(path).unwrap()).lines();
+
+    let mut balls : Vec<Point> = Vec::new();
+    let mut holes : Vec<Point> = Vec::new();
+
+    let mut reference = &mut balls;
+
+    for (i, line) in lines.enumerate() {
+        let line_ref = line.unwrap();
+        if i == 0 && !line_ref.eq("balls") {
+            println!("balls are missing at the first line");
+        }
+        if line_ref.eq("balls"){
+            continue;
+        }
+        if line_ref.eq("holes") {
+            reference = &mut holes;
+            continue;
+        }
+        let string = line_ref.replace("\n","");
+        let coords : Vec<&str> = string.split(" ").collect();
+
+        reference.push([coords[0].parse::<i32>().unwrap(), coords[1].parse::<i32>().unwrap()]);
+    }
+    let mut field: GolfField = GolfField{balls : Vec::new(), holes : Vec::new()};
+
+    for ball in balls{
+        field.balls.push([ball[0], ball[1]]);
+    }
+    for hole in holes{
+        field.holes.push([hole[0], hole[1]]);
+    }
     // make sure that there are as many balls as holes on the field
     assert_eq!(
         field.balls.len(),

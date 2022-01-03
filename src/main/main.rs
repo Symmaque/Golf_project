@@ -37,7 +37,6 @@ fn rendering() {
 
     instance(&mut canvas);
 
-
     //update canvas
     canvas.present();
 
@@ -68,7 +67,7 @@ fn instance_0(canvas: &mut Canvas<Window>) {
         current_dir().unwrap().to_str().unwrap(), "\\output\\", "output0.txt"
     );
     match fs::remove_file(&output_path) {
-        Ok(_response) => println!("File {:?} has been deleted", &output_path),
+        Ok(_response) => println!("File {:?} existed already so it has been erased before use", &output_path),
         Err(_error) => ()
     };
 
@@ -121,7 +120,16 @@ fn should_solve_instance_0() {
 }
 
 fn instance(canvas: &mut Canvas<Window>) {
+    let output_path = format!(
+        "{}{}{}",
+        current_dir().unwrap().to_str().unwrap(), "\\output\\", "outputs.txt"
+    );
+    match fs::remove_file(&output_path) {
+        Ok(_response) => println!("File {:?} existed already so it has been erased before use", &output_path),
+        Err(_error) => ()
+    };
     let mut field = field_from_name("inputs").expect("Cannot load inputs field.");
+
     draw_field(canvas, &field);
     golf(canvas, &mut field.balls, &mut field.holes, &String::from("outputs.txt"));
 }

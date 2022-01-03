@@ -173,8 +173,8 @@ pub(crate) fn divide(canvas: &mut Canvas<Window>, b: &mut Vec<Point>, h: &mut Ve
                         h_left.push(beta[k].1);
                     }
                     for k in i..(n - 1) {
-                        b_right.push(alpha[k].1);
-                        h_right.push(beta[k + 1].1);
+                        b_right.push(alpha[k + 1].1);
+                        h_right.push(beta[k].1);
                     }
                 }
                 golf(canvas, &mut b_left, &mut h_left, filename);
