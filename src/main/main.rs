@@ -11,7 +11,7 @@ use std::fs;
 use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use std::time::Duration;
+use std::time::{Duration};
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 use crate::algorithms::{golf};
@@ -157,7 +157,11 @@ fn instance(canvas: &mut Canvas<Window>, name_input: &str, name_output: &mut Str
     //add extension to the output
     name_output.push_str(".txt");
     //run algo
+
+    //let now = Instant::now();
     golf(canvas, &mut field.balls, &mut field.holes, &name_output);
+    //let time = now.elapsed().as_millis();
+
 }
 
 ///
