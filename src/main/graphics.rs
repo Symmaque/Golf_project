@@ -24,7 +24,7 @@ pub(crate) fn draw_circle(canvas: &mut Canvas<Window>, center: Point, radius: i3
     let y0 = center.y();
     let r = radius * radius;
 
-
+    // coloring the pixels inside the circle
     for x in (x0 - radius)..(x0 + 1) {
         for y in y0..(y0 + radius) {
             if (x - x0) * (x - x0) + (y - y0) * (y - y0) >= r {
@@ -47,10 +47,11 @@ pub(crate) fn draw_segment(canvas: &mut Canvas<Window>, start: &types::Point, en
 
 
 pub(crate) fn draw_field(canvas: &mut Canvas<Window>, field: &GolfField) {
+    //draw balls
     for ball in &field.balls {
         graphics::draw_circle(canvas, Point::new(ball[0], ball[1]), 5, Color::RGB(255, 0, 0));
     }
-
+    //draw holes
     for hole in &field.holes {
         graphics::draw_circle(canvas, Point::new(hole[0], hole[1]), 5, Color::RGB(0, 0, 255));
     }

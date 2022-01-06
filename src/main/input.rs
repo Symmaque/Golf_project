@@ -3,7 +3,7 @@ use crate::types::{GolfField, Point};
 use serde_json::Result;
 use std::{fs, io};
 use std::fs::File;
-use std::io::BufRead;
+use std::io::{BufRead, stdout, Write};
 
 /// Utility function returning inputs path.
 pub fn input_path(field_name: &str) -> std::io::Result<std::path::PathBuf> {
@@ -80,4 +80,15 @@ fn should_correctly_load_input() {
         format!("{:?}", field),
         "GolfField { holes: [[400, 300], [120, 220], [380, 320], [580, 180]], balls: [[100, 100], [280, 280], [320, 380], [480, 220]] }"
     )
+}
+
+///
+/// Get user's input file
+///
+pub fn get_input_file () -> String{
+    print!("Please enter the name of the input file (without the extension .txt) :");
+    let _ = stdout().flush();
+    let mut name_file = String::new();
+    io::stdin().read_line(&mut name_file).expect("read error");
+    name_file.replace("\n", "").replace("\r", "")
 }
