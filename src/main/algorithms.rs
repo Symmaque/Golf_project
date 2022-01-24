@@ -9,10 +9,10 @@ use crate::types::{Point};
 ///
 /// Function computing the squared distance between two points
 ///
-pub(crate) fn distance(m: &Point, p: &Point) -> i32 {
+pub(crate) fn distance(m: &Point, p: &Point) -> f64 {
     let diff_x = m[0] - p[0];
     let diff_y = m[1] - p[1];
-    diff_x * diff_x + diff_y * diff_y
+    f64::sqrt((diff_x * diff_x + diff_y * diff_y) as f64)
 }
 ///
 /// main algorithm
