@@ -1,2 +1,2 @@
 Execute "GolfProject.exe".
-To quit, press ESC
+Execute "Generator.exe" to generate a file inputs.txt with random configuration.
